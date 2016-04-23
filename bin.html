@@ -1,0 +1,267 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta property="og:image" content="http://bisikletliulasim.com/binilirmi.png?2" />
+    <title>Bisikletle Binilir mi? Istanbul Toplu Taşımada Bisiklet </title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8      , user-scalable=yes">
+    <style>
+    body {
+        width: 100%;
+        font-family: 'Roboto Condensed', sans-serif;
+    }
+    
+    #app {
+        width: 100%;
+    }
+    #header {
+        display:block;
+        margin-top: 10px;
+        margin-left: 50px;
+        margin-right: 50px;
+        line-height: 90px;
+        vertical-align: middle;
+        font-size: 3em;
+        height: 90px;
+        border-bottom: 1px solid;
+    }
+    @media screen and (max-width: 600px) {
+        .mobilehide{
+            display:none !important;
+        }
+        .mobilesmall{
+            font-size:0.7em !important;
+        }
+        .marginnone{
+            margin-left:0px !important;
+            margin-right:0px !important;
+        }
+        .paddingnone{
+            padding-left:0px !important;
+            padding-right:0px !important;
+        }
+        .mobiletopborder{
+            border-top:1px solid black;
+        }
+    }
+
+    @media screen and (max-width: 870px) {
+        .narrowhide{
+            display:none !important;
+        }
+    }
+    
+    #footer {
+        margin-top: 10px;
+        margin-left: 50px;
+        margin-right: 50px;
+        clear: both;
+        text-align:middle;
+    }
+    
+    .box {
+        border: 0px solid;
+        width: 200px;
+        height: 180px;
+        float: left;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 1.5em;
+        padding-top:20px;
+        /*line-height: 200px;*/
+        /*top: 50%;*/
+        position: relative;
+        border-color: black;
+        margin: 10px;
+    }
+
+    .legend{
+        width:20px;
+        height:20px;
+        display:inline-block;
+        margin-right:2px;
+    }
+
+    .times {
+        margin:60px;
+        margin-top:40px;
+        font-size:0.7em;
+    }
+    
+    .ok {
+        background: #4CAF50;
+        color: black;
+    }
+    
+    .notok {
+        background: #FF5252;
+    }
+    
+    .underline {
+        text-decoration: underline;
+    }
+    
+    .left {
+        float: left;
+    }
+    
+    .right {
+        float: right;
+    }
+    </style>
+</head>
+
+<body>
+    <script src="https://vuejs.org/js/vue.js"></script>
+    <div id="app">
+      <div id="header" class="paddingnone marginnone">
+            <span class="left mobilesmall marginnone paddingnone">Şimdi Bisikletle Binilir mi? <span style="font-size:0.4em;">{{time}}</span></span>
+            <span class="right mobilehide narrowhide"><img src="http://bisikletliulasim.com/logo.jpg" height="80 "/></span>
+        </div>
+        <ul style="clear:both;" class="paddingnone">
+            <li v-for="panel in panels" style="list-style-type:none;" class="paddingnone">
+                <panel class="paddingnone" :vehicle="panel.name"></panel>
+            </li>
+        </ul>
+      
+        <div id="footer" class="marginnone paddingnone mobiletopborder">
+            <p><div class="legend ok"></div>Şimdi Binilir</p>
+            <p><div class="legend notok"></div>Şimdi Binilmez, yazan saati bekleyin.</p>
+
+            <p><span class="underline">Katlanır Bisiklet</span> günün her saati her araca binebilir. Veriler İstanbul içindir</p>
+            <p><span class="left">Son Güncelleme: Nisan 2016</span></p>
+
+        </div>
+    </div>
+    <script type="text/javascript">
+    vehicle_times = {
+        'Metrobüs': [
+            ['00:00', '06:00'],
+            ['10:00', '16:00'],
+            ['22:00', '23:59'],
+
+        ],
+        'Metro': [
+            ['06:00', '07:00'],
+            ['09:00', '16:00'],
+            ['20:00', '23:59'],
+        ],
+        'Otobüs': [
+            ['00:00', '07:00'],
+            ['09:00', '16:00'],
+            ['22:00', '23:59'],
+        ],
+        'Marmaray': [
+            ['06:00', '07:00'],
+            ['09:00', '16:00'],
+            ['20:00', '23:59'],
+        ],
+        'Vapur': [
+            ['06:00', '23:00'],
+        ],
+        'Tünel': [
+            ['07:00', '22:45'],
+        ],
+        'Deniz Otobüsü': [
+            ['07:00', '21:00'],
+        ],
+        'Dentur': [
+            ['00:00', '01:00'],
+            ['06:00', '23:59'],
+        ],
+        'Turyol': [
+            ['06:00', '23:59'],
+            ['00:00', '01:00'],
+        ],
+        'Mavi Marmara': [
+            ['00:00', '01:00'],
+            ['07:00', '23:59'],
+        ],
+        'Araba Vapuru': [
+            ['07:00', '22:30'],
+        ],
+        'Hızlı Feribot': [
+            ['07:00', '22:30'],
+        ],
+    }
+
+
+    Vue.config.debug = true;
+
+    function getMinutes(str) {
+        var time = str.split(':');
+        return time[0] * 60 + time[1] * 1;
+    }
+
+    function getMinutesNow() {
+        var timeNow = new Date();
+        return timeNow.getHours() * 60 + timeNow.getMinutes();
+    }
+
+    function if_ok() {
+        var now = this.minutes;
+        for (index = 0; index < this.allowed_times.length; ++index) {
+            var time = this.allowed_times[index];
+            var start = getMinutes(time[0]);
+            var end = getMinutes(time[1]);
+            if ((now >= start) && (now <= end)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    var panel = Vue.extend({
+        template: '<div v-bind:class="[\'box\', { ok: status, notok: !status }]">{{ vehicle }}<table class="times"><tbody><tr v-for="time in allowed_times"><td>{{time[0]}}</td><td>{{time[1]}}</td></tr></tbody></table></div>',
+        props: ['vehicle'],
+        data: function() {
+            return {
+                allowed_times: vehicle_times[this.vehicle],
+                minutes: getMinutesNow(),
+                vehicle_times: {},
+            };
+        },
+        computed: {
+            status: if_ok,
+
+        },
+        created: function() {
+                this.interval = setInterval(function(){
+                    this.minutes = getMinutesNow();
+                }.bind(this), 1000)
+        }
+    });
+
+    Vue.component('panel', panel);
+
+    new Vue({
+        el: '#app',
+        data: {
+            time: "00:00",
+            panels: [
+              {name: 'Metrobüs'},
+              {name: 'Metro'},
+              {name: 'Otobüs'},
+              {name: 'Marmaray'},
+              {name: 'Tünel'},
+              {name: 'Vapur'},
+              {name: 'Deniz Otobüsü'},
+              {name: 'Dentur'},
+              {name: 'Turyol'},
+              {name: 'Mavi Marmara'},
+              {name: 'Araba Vapuru'},
+              {name: 'Hızlı Feribot'},
+             ],
+        },
+        created: function() {
+                this.interval = setInterval(function(){
+                    this.time = new Date().toLocaleTimeString('en-GB');
+                }.bind(this), 1000)
+        }
+
+    });
+    </script>
+</body>
+
+</html>
